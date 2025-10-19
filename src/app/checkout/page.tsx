@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import PhoneInput from "@/components/PhoneInput";
 import CountrySelect from "@/components/CountrySelect";
@@ -34,6 +34,19 @@ function CheckoutInner() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
+
+  // Require authentication: if no session, redirect to login with return URL
+  useEffect(() => {
+    const enforceAuth = async () => {
+      const supabase = supabaseBrowser();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        const returnTo = typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/checkout';
+        router.replace(`/login?redirect=${encodeURIComponent(returnTo)}`);
+      }
+    };
+    enforceAuth();
+  }, [router]);
 
   const id = params.get("id");
   const amount = Number(params.get("amount"));
@@ -75,6 +88,12 @@ function CheckoutInner() {
       const supabase = supabaseBrowser();
       const { data: { session } } = await supabase.auth.getSession();
       const accessToken = session?.access_token;
+      if (!accessToken) {
+        setLoading(false);
+        const returnTo = typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/checkout';
+        router.replace(`/login?redirect=${encodeURIComponent(returnTo)}`);
+        return;
+      }
       const res = await fetch('/api/orders', { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/json', ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}) }, 
@@ -84,9 +103,19 @@ function CheckoutInner() {
       if (!res.ok) {
         const j = await res.json().catch(()=>({}));
         console.error('orders api error', res.status, j);
+        setLoading(false);
+        if (res.status === 401) {
+          const returnTo = typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/checkout';
+          router.replace(`/login?redirect=${encodeURIComponent(returnTo)}`);
+        }
+        return;
       }
     } catch (e) {
       console.error('orders api exception', e);
+      setLoading(false);
+      const returnTo = typeof window !== 'undefined' ? `${window.location.pathname}${window.location.search}` : '/checkout';
+      router.replace(`/login?redirect=${encodeURIComponent(returnTo)}`);
+      return;
     }
     setTimeout(() => {
       setLoading(false);
