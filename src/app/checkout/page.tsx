@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import Image from "next/image";
 import PhoneInput from "@/components/PhoneInput";
 import CountrySelect from "@/components/CountrySelect";
@@ -29,7 +29,7 @@ const BRAND_TITLES: Record<string, string> = {
   blizzard: "Blizzard",
 };
 
-export default function CheckoutPage() {
+function CheckoutInner() {
   const params = useSearchParams();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -345,6 +345,14 @@ function FormPayer({ onContinue }: { onContinue: () => void }) {
         </button>
       </div>
     </>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh] bg-white flex items-center justify-center text-gray-700">Loading checkout…</div>}>
+      <CheckoutInner />
+    </Suspense>
   );
 }
 
