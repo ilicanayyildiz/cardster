@@ -60,6 +60,11 @@ function TopUpInner() {
     return () => { ignore = true; };
   }, []);
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined;
+  const imageBase = supabaseUrl
+    ? `${supabaseUrl}/storage/v1/object/public/images/`
+    : "/images/";
+
   return (
     <div className="relative min-h-screen bg-white">
       <div className="relative mx-auto max-w-6xl px-4 py-10">
@@ -206,7 +211,7 @@ function TopUpInner() {
             >
               <div className="relative p-4 sm:p-5">
                 <div className="relative w-full h-24 sm:h-28">
-                  <Image src={`/images/${p.slug}.png`} alt={p.name} fill sizes="(max-width:768px) 100vw, 240px" className="object-contain" />
+                  <Image src={`${imageBase}${p.slug}.png`} alt={p.name} fill sizes="(max-width:768px) 100vw, 240px" className="object-contain" />
                 </div>
               </div>
             </motion.a>

@@ -28,6 +28,9 @@ export default function ProductDetailPage() {
   const paymentLogosUrl = supabaseUrl
     ? `${supabaseUrl}/storage/v1/object/public/images/payment.png`
     : "/images/payment.png"; // optional local fallback
+  const imageBase = supabaseUrl
+    ? `${supabaseUrl}/storage/v1/object/public/images/`
+    : "/images/";
 
   if (!product) return <div className="mx-auto max-w-6xl px-4 py-10">Ürün bulunamadı.</div>;
 
@@ -44,7 +47,7 @@ export default function ProductDetailPage() {
       <div className="flex items-center justify-between gap-6">
         <div className="flex items-center gap-6">
           <div className="relative h-28 w-48 bg-white ring-1 ring-gray-200 rounded-md overflow-hidden">
-            <Image src={`/images/${product.slug}.png`} alt={product.name} fill sizes="240px" className="object-contain p-2" />
+            <Image src={`${imageBase}${product.slug}.png`} alt={product.name} fill sizes="240px" className="object-contain p-2" />
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
@@ -79,7 +82,7 @@ export default function ProductDetailPage() {
             <div key={a} className="rounded-2xl border bg-white p-5">
               <div className="flex items-center gap-3">
                 <div className="relative h-8 w-14 ring-1 ring-gray-200 rounded bg-white overflow-hidden">
-                  <Image src={`/images/${product.slug}.png`} alt={product.name} fill sizes="80px" className="object-contain p-1" />
+                  <Image src={`${imageBase}${product.slug}.png`} alt={product.name} fill sizes="80px" className="object-contain p-1" />
                 </div>
                 <div className="text-sm text-gray-900 font-semibold">{product.name}</div>
               </div>
