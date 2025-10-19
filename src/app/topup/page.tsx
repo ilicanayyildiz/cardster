@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { Suspense, useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { COUNTRIES } from "@/lib/countries";
@@ -10,7 +10,7 @@ type DbProduct = { slug: string; name: string };
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import CategoryNav from "@/components/CategoryNav";
 
-export default function TopUpPage() {
+function TopUpInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = useParams<{ country?: string }>();
@@ -231,6 +231,14 @@ export default function TopUpPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function TopUpPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh] bg-white flex items-center justify-center text-gray-700">Loading…</div>}>
+      <TopUpInner />
+    </Suspense>
   );
 }
 

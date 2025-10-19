@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 
 const BRAND_TITLES: Record<string, string> = {
   bigolive: "Bigo Live",
@@ -25,7 +25,7 @@ const BRAND_TITLES: Record<string, string> = {
   blizzard: "Blizzard",
 };
 
-export default function EntertainmentBrandPage() {
+function EntertainmentBrandInner() {
   const { brand } = useParams<{ brand: string }>();
   const router = useRouter();
   const sp = useSearchParams();
@@ -82,6 +82,14 @@ export default function EntertainmentBrandPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function EntertainmentBrandPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh] bg-white flex items-center justify-center text-gray-700">Loading…</div>}>
+      <EntertainmentBrandInner />
+    </Suspense>
   );
 }
 

@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import { COUNTRIES } from "@/lib/countries";
-import { useMemo, useState, useEffect } from "react";
+import { Suspense, useMemo, useState, useEffect } from "react";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import CategoryNav from "@/components/CategoryNav";
 
-export default function EsimPage() {
+function EsimInner() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined;
   const esimImageUrl = supabaseUrl
     ? `${supabaseUrl}/storage/v1/object/public/images/esim2.jpg`
@@ -171,6 +171,14 @@ export default function EsimPage() {
         </section>
       </div>
     </div>
+  );
+}
+
+export default function EsimPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh] bg-white flex items-center justify-center text-gray-700">Loading…</div>}>
+      <EsimInner />
+    </Suspense>
   );
 }
 
