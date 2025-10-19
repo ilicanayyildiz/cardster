@@ -2,14 +2,14 @@
 
 import Image from "next/image";
 import { COUNTRIES } from "@/lib/countries";
-import { useMemo, useState, useEffect } from "react";
+import { Suspense, useMemo, useState, useEffect } from "react";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import CategoryNav from "@/components/CategoryNav";
 
 type DbProduct = { slug: string; name: string };
 
-export default function GameCardsPage() {
+function GameCardsInner() {
   const [products, setProducts] = useState<DbProduct[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -154,6 +154,14 @@ export default function GameCardsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function GameCardsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh] bg-white flex items-center justify-center text-gray-700">Loading…</div>}>
+      <GameCardsInner />
+    </Suspense>
   );
 }
 
