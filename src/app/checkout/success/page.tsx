@@ -1,14 +1,14 @@
 "use client";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 function generateCode(): string {
   const digits = Array.from({ length: 16 }, () => Math.floor(Math.random() * 10)).join("");
   return `${digits.slice(0, 4)}-${digits.slice(4, 8)}-${digits.slice(8, 12)}-${digits.slice(12)}`;
 }
 
-export default function SuccessPage() {
+function SuccessInner() {
   const params = useSearchParams();
   const order = params.get("order");
   const brand = params.get("id") || params.get("product") || "giftcard";
@@ -82,6 +82,14 @@ export default function SuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh] bg-transparent flex items-center justify-center text-white">Loading…</div>}>
+      <SuccessInner />
+    </Suspense>
   );
 }
 
