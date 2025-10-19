@@ -24,3 +24,25 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Force dark placeholders to be readable on light backgrounds */
+input::placeholder,
+textarea::placeholder {
+  color: #171717;
+  opacity: 1; /* override browser default lighter opacity */
+}
+
+select,
+input,
+textarea {
+  color: #171717;
+}
+
+/* Hide scrollbars but keep scrolling */
+.scrollbar-none {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
